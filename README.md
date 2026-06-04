@@ -1,5 +1,7 @@
 # MaxGenie
 
+<p align="center"><strong>Release v0.1.0</strong></p>
+
 <p align="center">
   <img src="docs/assets/maxgenie-demo.gif" alt="MaxGenie demo" width="720">
 </p>
@@ -7,6 +9,40 @@
 MaxGenie is a Databricks workspace skill for optimizing one Genie space at a time. It runs inside the Databricks workspace, creates a disposable optimization clone, reads the space benchmarks, proposes structured improvements through a Databricks serving endpoint, rejects regressions with benchmark gates, and writes a final report with checkpoints and rollback artifacts.
 
 The source Genie space is never modified directly.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  src["Source Genie space<br/>(read-only)"] --> clone["Export + managed clone<br/>(edits only here)"]
+  clone --> assets["Editable assets"]
+
+  clone --> bench{"Benchmarks?"}
+  bench -- "No" --> adv["Advisory best-practices pass"] --> advReport["Not benchmark-verified<br/>no score"]
+
+  bench -- "Yes" --> split["Train / validation / hidden holdout"]
+  split --> base["Baseline eval"] --> cand["Candidate change<br/>visible evidence only"]
+  assets --> cand
+
+  cand --> gate["Train + validation gate"]
+  gate --> pass{"Passes?"}
+  pass -- "No" --> reject["Reject / restore"]
+  pass -- "Yes" --> accept["Accept / checkpoint"]
+
+  reject --> loop{"Budget left?"}
+  accept --> loop
+  loop -- "Yes" --> cand
+  loop -- "No" --> audit["Final full eval<br/>hidden holdout included"]
+
+  split -. "holdout not shown to candidates" .-> audit
+
+  audit --> final{"Improves full score<br/>and holdout safe?"}
+  final -- "Yes" --> promote["Promotable clone state"]
+  final -- "No" --> safe["Safest checkpoint<br/>not promotable"]
+
+  promote --> report["Final report"]
+  safe --> report
+```
 
 The local `maxgenie` command is an operator wrapper for syncing the skill, launching Databricks jobs, checking status, and running the same workflow from a shell when needed. It is not the primary product surface.
 
