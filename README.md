@@ -88,10 +88,6 @@ Examples and tests use synthetic fixture data. Any domain-specific product names
 
 Before making a repository public, complete the checklist in `PUBLIC_RELEASE.md`, including license selection, third-party dependency license review, peer review, owner assignment, and confirmation that no non-public information is tracked.
 
-## How To Get Help
-
-Databricks support does not cover this content. For questions or bugs, open a GitHub issue and the team will review it on a best-effort basis.
-
 ## License
 
 Copyright 2026 Databricks, Inc. All rights reserved. The source is provided subject to the Databricks License in `LICENSE.md`. Included or referenced third-party libraries are subject to their own licenses.
