@@ -103,8 +103,11 @@ def test_product_docs_describe_post_collapse_existing_executable_guidance() -> N
         "return no_change when no existing executable edit surface is available",
     )
 
+    readme = (repo_root / "README.md").read_text()
+    assert "docs/candidate-modes.md" in readme
+
     for relative_path in (
-        "README.md",
+        "docs/candidate-modes.md",
         "genie_skills/maxgenie/SKILL.md",
     ):
         content = (repo_root / relative_path).read_text()
@@ -122,8 +125,11 @@ def test_product_docs_describe_skeleton_artifact_patch_mode() -> None:
         "hidden-holdout",
     )
 
+    readme = (repo_root / "README.md").read_text()
+    assert "docs/candidate-modes.md" in readme
+
     for relative_path in (
-        "README.md",
+        "docs/candidate-modes.md",
         "genie_skills/maxgenie/SKILL.md",
     ):
         content = (repo_root / relative_path).read_text()
