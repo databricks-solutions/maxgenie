@@ -1,0 +1,1 @@
+"""MaxGenie skill scripts."""

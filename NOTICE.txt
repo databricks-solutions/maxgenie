@@ -1,0 +1,46 @@
+MaxGenie
+Copyright 2026 Databricks, Inc.
+
+This product is licensed under the Databricks License. See the LICENSE.md file
+for the full license text.
+
+This product declares the following direct third-party Python dependencies.
+Review transitive dependency obligations before any public release.
+
+Apache License 2.0
+
+  databricks-sdk
+  https://github.com/databricks/databricks-sdk-py
+  Copyright (c) Databricks, Inc.
+
+  mlflow (optional tracking dependency)
+  https://github.com/mlflow/mlflow
+  Copyright (c) Databricks, Inc.
+
+BSD 3-Clause License
+
+  httpx
+  https://github.com/encode/httpx
+  Copyright (c) Encode OSS Ltd.
+
+  python-dotenv
+  https://github.com/theskumar/python-dotenv
+  Copyright (c) Saurabh Kumar
+
+MIT License
+
+  pydantic
+  https://github.com/pydantic/pydantic
+  Copyright (c) Samuel Colvin and other contributors
+
+  PyYAML
+  https://pyyaml.org/
+  Copyright (c) Kirill Simonov
+
+  typer
+  https://github.com/fastapi/typer
+  Copyright (c) Sebastian Ramirez
+
+  pytest (development dependency)
+  https://github.com/pytest-dev/pytest
+  Copyright (c) Holger Krekel and contributors

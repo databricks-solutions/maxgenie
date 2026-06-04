@@ -1,0 +1,7 @@
+interface:
+  display_name: "MaxGenie Skill"
+  short_description: "Optimize the current Genie space with an autonomous durable job run"
+  default_prompt: "Use $maxgenie to optimize the current Databricks Genie space. When invoked inside a Genie room, treat the current screen's space as the target and launch optimization by default; do not show an action menu unless the user explicitly asks for options. Resolve endpoint and warehouse inputs automatically, launch a durable job, keep the status monitor open by default so the chat reports terminal completion, and use the status helper output for the valid run link, optimized clone URL/title, score movement, terminal-selection reason, and final report path. If the existing Genie UI eval score differs from the fresh MaxGenie result-based baseline, report both and clarify that no net improvement is measured against the fresh MaxGenie baseline."
+
+policy:
+  allow_implicit_invocation: true

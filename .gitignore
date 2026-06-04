@@ -1,0 +1,43 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+workspace/
+workspace-*/
+.maxgenie-build/
+*.egg-info/
+.DS_Store
+.env
+*conf*.json
+.idea/
+
+# Private planning, local context, and generated experiment artifacts
+CLAUDE.md
+AGENTS.md
+GEMINI.md
+GOAL_*.md
+PUBLISH_*.md
+.agents/
+.omc/
+.race_*/
+agentic/
+best-practices/
+centaur/
+deterministic/
+experiment_artifacts/
+hybrid/
+local_context/
+reports/
+worker_builds/
+comparison.json
+NEXT_WAVE_*
+
+# Transient run logs and pids
+.*_run.log
+.*_run.pid
+
+# Local tracking db
+.omc/mlruns.db
+
+# Local runtime state
+.omc/

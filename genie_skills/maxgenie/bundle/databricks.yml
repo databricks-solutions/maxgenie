@@ -1,0 +1,126 @@
+# Named gateway job for MaxGenie optimization runs.
+#
+# This is the persistent, scheduleable equivalent of `maxgenie submit-run` /
+# run_skill(mode="submit", ...). Those launch one-shot runs/submit; this defines
+# a named job so the workspace gets a permanent "Run now" button, run history,
+# and optional scheduling in the Jobs UI.
+#
+# Prerequisites and deploy steps:
+#   1. Sync the skill so the runner exists in the workspace:
+#        python genie_skills/maxgenie/scripts/sync_to_workspace.py --profile <profile>
+#   2. Deploy this bundle from this directory:
+#        cd genie_skills/maxgenie/bundle && databricks bundle deploy --profile <profile>
+#   3. In the Jobs UI open "Space Optimizer Optimization Run", click Run now,
+#      review the parameters, and run.
+#
+# The task runs the same `runner.py --mode full` worker as submit mode against the
+# already-synced runner. It does NOT re-run submit mode's production-protocol
+# preflight, so set `warehouse_id` and serving settings deliberately when overriding
+# the defaults.
+
+bundle:
+  name: maxgenie-optimize-job
+
+variables:
+  host:
+    description: Databricks workspace host. Override before deploying.
+    default: https://dbc-example.cloud.databricks.com
+  runner_path:
+    description: Absolute /Workspace path to the synced skill runner.py.
+    default: /Workspace/Users/<user>@<domain>/.assistant/skills/maxgenie/scripts/runner.py
+
+workspace:
+  host: ${var.host}
+
+resources:
+  jobs:
+    maxgenie_optimize:
+      name: "Space Optimizer Optimization Run"
+      timeout_seconds: 14400
+      max_concurrent_runs: 1
+      # Per-run knobs are job parameters so they can be edited at "Run now" time.
+      parameters:
+        - name: space_url
+          default: "https://dbc-example.cloud.databricks.com/genie/rooms/00000000000000000000000000000000"
+        - name: serving_endpoint
+          default: "databricks-gpt-5-5"
+        - name: serving_model
+          default: "databricks-gpt-5-5"
+        - name: serving_reasoning_effort
+          default: "low"
+        - name: warehouse_id
+          # Enables result-based comparison. Empty falls back to diagnostic scoring.
+          default: ""
+        - name: workspace_root
+          default: "/Workspace/Users/<user>@<domain>/.maxgenie/runs/job"
+        - name: strategy
+          default: "serving"
+        - name: max_iterations
+          default: "30"
+        - name: plateau_rounds
+          default: "3"
+      tasks:
+        - task_key: optimize
+          description: "Run one unattended Genie space optimization loop."
+          environment_key: maxgenie
+          timeout_seconds: 14400
+          max_retries: 0
+          spark_python_task:
+            python_file: ${var.runner_path}
+            source: WORKSPACE
+            # Flags not listed here (--delay-seconds, --match-threshold,
+            # --serving-max-tokens, --serving-response-format, --serving-api-format)
+            # inherit runner.py defaults, which currently equal the submit payload's
+            # values. If a build_parser() default changes, mirror it here.
+            parameters:
+              - "--mode"
+              - "full"
+              - "--space-url"
+              - "{{job.parameters.space_url}}"
+              - "--workspace-root"
+              - "{{job.parameters.workspace_root}}"
+              - "--strategy"
+              - "{{job.parameters.strategy}}"
+              - "--serving-endpoint"
+              - "{{job.parameters.serving_endpoint}}"
+              - "--serving-model"
+              - "{{job.parameters.serving_model}}"
+              - "--serving-reasoning-effort"
+              - "{{job.parameters.serving_reasoning_effort}}"
+              - "--warehouse-id"
+              - "{{job.parameters.warehouse_id}}"
+              - "--max-iterations"
+              - "{{job.parameters.max_iterations}}"
+              - "--plateau-rounds"
+              - "{{job.parameters.plateau_rounds}}"
+              - "--use-latest-observed-benchmark"
+              # Opt into the result-based fair comparator (current scoring epoch) by
+              # uncommenting the next line. This changes scoring semantics, so treat
+              # it as a deliberate methodology choice.
+              # - "--content-match"
+      # Serverless environment mirrors the runs/submit payload (env key "maxgenie",
+      # version "2") and the optimizer's runtime dependencies.
+      environments:
+        - environment_key: maxgenie
+          spec:
+            environment_version: "2"
+            dependencies:
+              - databricks-sdk>=0.44.0
+              - httpx>=0.27.0
+              - pydantic>=2.6.0
+              - PyYAML>=6.0
+              - typer>=0.12.0
+              - python-dotenv>=1.0.0
+      # Recurring runs: uncomment and set a cron. Left paused/absent by default so
+      # deploying the bundle never starts an unattended run on its own.
+      # schedule:
+      #   quartz_cron_expression: "0 0 6 ? * MON"
+      #   timezone_id: "UTC"
+      #   pause_status: PAUSED
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: ${var.host}

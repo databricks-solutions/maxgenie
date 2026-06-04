@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "maxgenie"
+version = "0.1.0"
+description = "Databricks workspace skill for clone-safe Genie space optimization"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{name = "MaxGenie"}]
+license = {file = "LICENSE.md"}
+dependencies = [
+  "databricks-sdk>=0.44.0",
+  "httpx>=0.27.0",
+  "pydantic>=2.6.0",
+  "PyYAML>=6.0",
+  "typer>=0.12.0",
+  "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+]
+tracking = [
+  "mlflow>=3.5.1",
+]
+
+[project.scripts]
+maxgenie = "maxgenie.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "."}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["maxgenie*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
