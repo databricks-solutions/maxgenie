@@ -1,5 +1,18 @@
 # MaxGenie
 
+> [!IMPORTANT]
+> **Archived project**
+>
+> MaxGenie is no longer actively maintained. Its validated optimizer ideas are
+> being consolidated into
+> [Genie Workbench](https://github.com/databricks-solutions/databricks-genie-workbench):
+> observed-value grounding was merged in
+> [PR #322](https://github.com/databricks-solutions/databricks-genie-workbench/pull/322),
+> and production-traffic benchmark-gap discovery is proposed in
+> [PR #323](https://github.com/databricks-solutions/databricks-genie-workbench/pull/323).
+> Use Genie Workbench for active development and support. This repository
+> remains available as historical reference.
+
 <p align="center"><strong>Release v0.1.0</strong></p>
 
 <p align="center">
